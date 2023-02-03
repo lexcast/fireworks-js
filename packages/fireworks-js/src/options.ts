@@ -10,6 +10,7 @@ import type {
 } from './types.js'
 
 export class Options implements FireworksOptions {
+  public hex: Array<string>
   public hue: MinMax
   public rocketsPoint: MinMax
   public opacity: number
@@ -45,6 +46,8 @@ export class Options implements FireworksOptions {
     this.particles = 50
     this.friction = 0.95
     this.acceleration = 1.05
+
+    this.hex = []
 
     this.hue = {
       min: 0,

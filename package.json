@@ -51,5 +51,8 @@
     "vite": "3.2.2",
     "vite-plugin-banner": "0.6.1",
     "vite-plugin-dts": "1.6.6"
+  },
+  "dependencies": {
+    "hex-to-hsl": "^1.0.2"
   }
 }

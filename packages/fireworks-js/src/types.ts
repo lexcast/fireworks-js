@@ -3,6 +3,7 @@ import type { Fireworks } from './fireworks.js'
 export type LineStyle = 'round' | 'square'
 
 export interface IFireworksOptions {
+  hex: Array<string>
   hue: MinMax
   rocketsPoint: MinMax
   opacity: number
@@ -69,6 +70,8 @@ export interface TraceOptions {
   dy: number
   ctx: CanvasRenderingContext2D
   hue: number
+  brightness: number
+  saturation: number
   speed: number
   acceleration: number
   traceLength: number
@@ -84,7 +87,8 @@ export interface ExplosionOptions {
   explosionLength: number
   flickering: boolean
   lineWidth: number
-  brightness: MinMax
+  brightness: number
+  saturation: number
   decay: MinMax
 }
 

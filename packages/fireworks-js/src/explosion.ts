@@ -15,6 +15,7 @@ export class Explosion {
   private angle: number
   private speed: number
   private brightness: number
+  private saturation: number
   private coordinates: [number, number][] = []
   private decay: number
   private alpha = 1
@@ -28,6 +29,7 @@ export class Explosion {
     gravity,
     friction,
     brightness,
+    saturation,
     flickering,
     lineWidth,
     explosionLength
@@ -43,7 +45,8 @@ export class Explosion {
     this.explosionLength = explosionLength
     this.angle = randomFloat(0, Math.PI * 2)
     this.speed = randomInt(1, 10)
-    this.brightness = randomInt(brightness.min, brightness.max)
+    this.brightness = brightness
+    this.saturation = saturation
     this.decay = randomFloat(decay.min, decay.max)
 
     while (this.explosionLength--) {
@@ -69,7 +72,7 @@ export class Explosion {
 
     this.ctx.beginPath()
     this.ctx.lineWidth = this.lineWidth
-    this.ctx.fillStyle = hsla(this.hue, this.brightness, this.alpha)
+    this.ctx.fillStyle = hsla(this.hue, this.saturation, this.brightness, this.alpha)
     this.ctx.moveTo(
       this.coordinates[lastIndex]![0],
       this.coordinates[lastIndex]![1]
@@ -77,6 +80,7 @@ export class Explosion {
     this.ctx.lineTo(this.x, this.y)
     this.ctx.strokeStyle = hsla(
       this.hue,
+      this.saturation,
       this.flickering ? randomFloat(0, this.brightness) : this.brightness,
       this.alpha
     )

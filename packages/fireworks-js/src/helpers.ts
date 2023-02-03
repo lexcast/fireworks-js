@@ -20,9 +20,13 @@ export function getDistance(
   return Math.sqrt(pow(x - dx, 2) + pow(y - dy, 2))
 }
 
-export function hsla(hue: number, lightness: number, alpha = 1): string {
+export function hsla(hue: number, saturation: number, lightness: number, alpha = 1): string {
   if (hue > 360 || hue < 0) {
     throw new Error(`Expected hue 0-360 range, got \`${hue}\``)
+  }
+
+  if (saturation > 100 || saturation < 0) {
+    throw new Error(`Expected saturation 0-100 range, got \`${saturation}\``)
   }
 
   if (lightness > 100 || lightness < 0) {
@@ -33,7 +37,7 @@ export function hsla(hue: number, lightness: number, alpha = 1): string {
     throw new Error(`Expected alpha 0-1 range, got \`${alpha}\``)
   }
 
-  return `hsla(${hue}, 100%, ${lightness}%, ${alpha})`
+  return `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`
 }
 
 /* https://github.com/voodoocreation/ts-deepmerge */

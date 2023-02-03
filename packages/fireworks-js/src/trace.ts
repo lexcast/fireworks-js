@@ -17,6 +17,7 @@ export class Trace {
   private totalDistance: number
   private angle: number
   private brightness: number
+  private saturation: number
   private coordinates: [number, number][] = []
   private currentDistance = 0
 
@@ -27,6 +28,8 @@ export class Trace {
     dy,
     ctx,
     hue,
+    brightness,
+    saturation,
     speed,
     traceLength,
     acceleration
@@ -39,19 +42,20 @@ export class Trace {
     this.dy = dy
     this.ctx = ctx
     this.hue = hue
+    this.brightness = brightness
+    this.saturation = saturation
     this.speed = speed
     this.traceLength = traceLength
     this.acceleration = acceleration
     this.totalDistance = getDistance(x, y, dx, dy)
     this.angle = Math.atan2(dy - y, dx - x)
-    this.brightness = randomInt(50, 70)
 
     while (this.traceLength--) {
       this.coordinates.push([x, y])
     }
   }
 
-  update(callback: (x: number, y: number, hue: number) => void): void {
+  update(callback: (x: number, y: number, hue: number, saturation: number, brightness: number) => void): void {
     this.coordinates.pop()
     this.coordinates.unshift([this.x, this.y])
     this.speed *= this.acceleration
@@ -67,7 +71,7 @@ export class Trace {
     )
 
     if (this.currentDistance >= this.totalDistance) {
-      callback(this.dx, this.dy, this.hue)
+      callback(this.dx, this.dy, this.hue, this.saturation, this.brightness)
     } else {
       this.x += vx
       this.y += vy
@@ -83,7 +87,7 @@ export class Trace {
       this.coordinates[lastIndex]![1]
     )
     this.ctx.lineTo(this.x, this.y)
-    this.ctx.strokeStyle = hsla(this.hue, this.brightness)
+    this.ctx.strokeStyle = hsla(this.hue, this.saturation, this.brightness)
     this.ctx.stroke()
   }
 }

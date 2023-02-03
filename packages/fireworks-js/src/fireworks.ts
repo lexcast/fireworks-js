@@ -1,3 +1,4 @@
+import hexToHsl from 'hex-to-hsl'
 import { Explosion } from './explosion.js'
 import { floor, randomFloat, randomInt } from './helpers.js'
 import { Mouse } from './mouse.js'
@@ -21,6 +22,7 @@ export class Fireworks {
   private explosions: Explosion[] = []
   private waitStopRaf: (() => void) | null
   private running = false
+  private colors = []
 
   private readonly opts: Options
   private readonly sound: Sound
@@ -38,6 +40,13 @@ export class Fireworks {
     this.opts = new Options()
 
     this.updateOptions(options)
+
+    if (this.opts.hex.length) {
+      this.opts.hex.forEach(hex => {
+        this.colors.push(hexToHsl(hex))
+      });
+    }
+
     this.createCanvas(this.target)
 
     this.sound = new Sound(this.opts)
@@ -192,6 +201,7 @@ export class Fireworks {
   private createTrace(): void {
     const {
       hue,
+      brightness,
       rocketsPoint,
       boundaries,
       traceLength,
@@ -199,6 +209,12 @@ export class Fireworks {
       acceleration,
       mouse
     } = this.opts
+
+    const color = this.colors.length > 1
+      ? this.colors[Math.floor(Math.random() * this.colors.length)]
+      : this.colors.length === 1
+        ? this.colors[0]
+        : null;
 
     this.traces.push(
       new Trace({
@@ -213,7 +229,9 @@ export class Fireworks {
             ? this.mouse.y
             : randomInt(boundaries.y, boundaries.height * 0.5),
         ctx: this.ctx,
-        hue: randomInt(hue.min, hue.max),
+        hue: color ? color[0] : randomInt(hue.min, hue.max),
+        brightness: color ? color[2] : randomInt(brightness.min, brightness.max),
+        saturation: color ? color[1] : 100,
         speed: traceSpeed,
         acceleration,
         traceLength: floor(traceLength)
@@ -238,21 +256,20 @@ export class Fireworks {
     let traceLength = this.traces.length
     while (traceLength--) {
       this.traces[traceLength]!.draw()
-      this.traces[traceLength]!.update((x: number, y: number, hue: number) => {
-        this.initExplosion(x, y, hue)
+      this.traces[traceLength]!.update((x: number, y: number, hue: number, saturation: number, brightness: number) => {
+        this.initExplosion(x, y, hue, saturation, brightness)
         this.sound.play()
         this.traces.splice(traceLength, 1)
       })
     }
   }
 
-  private initExplosion(x: number, y: number, hue: number): void {
+  private initExplosion(x: number, y: number, hue: number, saturation: number, brightness: number): void {
     const {
       particles,
       flickering,
       lineWidth,
       explosion,
-      brightness,
       friction,
       gravity,
       decay
@@ -275,6 +292,7 @@ export class Fireworks {
           ),
           explosionLength: floor(explosion),
           brightness,
+          saturation,
           decay
         })
       )
